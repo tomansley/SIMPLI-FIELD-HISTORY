@@ -1,0 +1,103 @@
+<!--
+  @description       : 
+  @author            : tom.h.ansley@medtronic.com
+  @group             : 
+  @last modified on  : 01-20-2021
+  @last modified by  : tom.h.ansley@medtronic.com
+  Modifications Log 
+  Ver   Date         Author                       Modification
+  1.0   08-18-2020   tom.h.ansley@medtronic.com   Initial Version
+-->
+<template>
+
+    <lightning-card title="Feature Overview" icon-name="standard:announcement">
+        <div class="slds-m-around_medium">
+            <div style="padding-left: 20px;">
+                <ol style="list-style-type:circle; list-style-position: inside;">
+                    <li style="padding-bottom: 5px;">Configure any field for history tracking</li>
+                    <li style="padding-bottom: 5px;">Duration between field value changes and from/to values stored for later review and reporting</li>
+                    <li style="padding-bottom: 5px;">Lookup fields tracked with record names stored for easy identification</li>
+                </ol>
+            </div>
+        </div>
+    </lightning-card>
+    <br/>
+    <lightning-card title="Quick Start" icon-name="standard:custom_notification">
+        <div class="slds-m-around_medium">
+            <div style="padding-left: 20px;">
+                <ol style="list-style-type:decimal; list-style-position: inside;">
+                    <li style="padding-bottom: 5px;">Create a new account.</li>
+                    <li style="padding-bottom: 5px;">Open the Simpli Field History App</li>
+                    <li style="padding-bottom: 5px;">Click on Field Tracking History tab</li>
+                    <li style="padding-bottom: 5px;">Select Field History - Accounts list view</li>
+                    <li style="padding-bottom: 5px;">Notice the new record tracking account names. The record indicates the account, from/to value for the account name and other details</li>
+                    <li style="padding-bottom: 5px;">Update the same accounts name</li>
+                    <li style="padding-bottom: 5px;">Go back to list view and refresh</li>
+                    <li style="padding-bottom: 5px;">Notice the new record indicating the change to the account name</li>
+                </ol>
+            </div>
+        </div>
+    </lightning-card>
+    <br/>
+    <lightning-card title="Configuration" icon-name="standard:settings">
+        <div class="slds-m-around_medium">
+
+            <p>All configuration to determine what fields are tracked is maintained in the custom metadata type - <b>Field History Setting</b>. When first installing the app a number of settings are installed
+                by default to give examples that users can utilize when building their own configuration. Also, a number of standard objects have triggers prebuilt and are automatically available for field
+                configuration. These objects include - <b>Account, Contact, Campaign Member, Event and User</b>.</p>
+            <br/>
+            <br/>
+            <div>
+                <b>Simple Field Config For PreBuilt Object</b>
+                <br/><br/>
+                <p>For objects where a trigger has already been created and installed by this app package (<b>Account, Contact, Campaign Member, Event and User</b>) the only action that needs to be taken is the creation of field configuration. An example 
+                    configuration of this type is the <b>Account.Name</b> configuration that is pre-installed</p>
+                <br/>
+                <div style="padding-left: 20px;">
+                    <ol style="list-style-type:decimal; list-style-position: inside;">
+                        <li style="padding-bottom: 5px;"><b>Label</b> - a unique value identifying the setting. Best practice is to use the SOQL object and field name (without the __). i.e. Account.Name, Custom_Obj.Field_Name</li>
+                        <li style="padding-bottom: 5px;"><b>Is Active</b> - identifies if the setting is active. This is useful if problems arise. Unchecking this value will immediately remove the setting from processing consideration.</li>
+                        <li style="padding-bottom: 5px;"><b>Object API Name</b> - the API name of the object i.e. Account, CampaignMember, Custom_Object__c</li>
+                        <li style="padding-bottom: 5px;"><b>Object Label Name</b> - the label name of the object. Useful for reporting purposes.</li>
+                        <li style="padding-bottom: 5px;"><b>Field API Name</b> - the API name of the field. i.e. Name, Custom_Field__c</li>
+                        <li style="padding-bottom: 5px;"><b>Field Label</b> - the label name of the field. Useful for reporting purposes.</li>
+                    </ol>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <div>
+                <b>Simple Field Config For Custom Object</b>
+                <br/><br/>
+                <p>For objects outside of the above mentioned prebuilt objects extra steps need to be performed before creating configuration.</p>
+                <br/>
+                <div style="padding-left: 20px;">
+                    <ol style="list-style-type:decimal; list-style-position: inside;">
+                        <li style="padding-bottom: 5px;"><b>New Record Type</b> - a new record type on the simpli_fhist__Field_History__c object needs to be created. The record type name MUST be the API name of the object without any trailing __c. i.e. Activity, CardPaymentMethod, Contract, Custom_Object</li>
+                        <li style="padding-bottom: 5px;"><b>New Lookup Field</b> - a new lookup field must be added to the simpli_fhist__Field_History__c object. The field API name MUST be the API name of the object without any trailing '__c'. i.e. Activity, CardPaymentMethod, Contract, Custom_Object. (Note - if lookup fields are not allowed for the object (e.g. Event, CampaignMember) the type of the new field must be textfield with a size of 18.)</li>
+                        <li style="padding-bottom: 5px;"><b>New List View (optional)</b> - a new list view can be created to better view the field history for the newly configured object.</li>
+                        <li style="padding-bottom: 5px;"><b>Create/Update Object Trigger</b> - the new object for which fields are being tracked must have its trigger updated. If no trigger exists for the object the following code (replacing "Contract" with the object name) can be used -</li>
+                    </ol>
+                </div>
+                <br/>
+                <div style="padding-left: 20px;">
+                    <code style="font-weight: bold; white-space: nowrap; overflow: auto; overflow-y: hidden;">
+                    trigger ContractTrigger on Contract (after insert, after update, after delete) &#123;<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;simpli_fhist.FieldHistoryHelper.processFieldHistoryTracking(Trigger.new, Trigger.oldMap);<br/>
+                    &#125;<br/>
+                    </code>
+                </div>
+                <br/>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;For objects that already have triggers only the following line needs to be included in the trigger -</p>
+                <br/>
+                <div style="padding-left: 20px;">
+                    <code style="font-weight: bold; white-space: nowrap; overflow: auto; overflow-y: hidden;">
+                    simpli_fhist.FieldHistoryHelper.processFieldHistoryTracking(Trigger.new, Trigger.oldMap);<br/>
+                    </code>
+                </div>
+
+            </div>
+        </div>
+    </lightning-card>
+
+</template>
