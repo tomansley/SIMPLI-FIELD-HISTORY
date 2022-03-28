@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 01-14-2021
- * @last modified by  : tom.h.ansley@medtronic.com
+ * @last modified on  : 02-09-2022
+ * @last modified by  : tom@ansleyllc.com
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-13-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -170,8 +170,10 @@ global with sharing class FieldHistoryHelper {
                       'ORDER BY ' + objType + '__c, Change_Index__c ASC';
                       
         System.debug(LoggingLevel.DEBUG, 'SOQL - ' + soql);
-        HelperSchema.checkSelectAccessible(soql);
-        List<Field_History__c> results = (List<Field_History__c>) Database.query(soql);
+
+        SObjectAccessDecision dec = Security.stripInaccessible(AccessType.READABLE, Database.query(soql));
+
+        List<Field_History__c> results = (List<Field_History__c>) dec.getRecords();
 
         return results;
     }

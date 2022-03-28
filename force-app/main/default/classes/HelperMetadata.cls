@@ -46,8 +46,6 @@ public with sharing class HelperMetadata {
         whereClause = whereClause.removeEnd(' AND ');
         
         String soql = 'SELECT ' + String.escapeSingleQuotes(String.join(new List<String>(objFields.keySet()), ',')) + ' FROM ' + String.escapeSingleQuotes(metadataTypes.get(name).Metadata_API_Name__c) + whereClause;
-        
-        HelperSchema.checkSelectAccessible(soql);
 
         SObjectAccessDecision dec = Security.stripInaccessible(AccessType.READABLE, Database.query(soql));
         

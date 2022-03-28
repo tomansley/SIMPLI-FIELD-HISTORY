@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : tom.h.ansley@medtronic.com
  * @Group              : 
- * @Last Modified By   : tom.h.ansley@medtronic.com
- * @Last Modified On   : 01-14-2021
+ * @Last Modified By   : tom@ansleyllc.com
+ * @Last Modified On   : 02-09-2022
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    6/11/2020   tom.h.ansley@medtronic.com     Initial Version
@@ -18,15 +18,6 @@ public with sharing class HelperSchema {
 	public static final String LABEL = 'label';
     public static final String NAME = 'name';
     public static final String DOMAIN_NAME = 'simpli_fhist__';
-
-    public static final String ACCESSIBLE = 'accessible';
-    public static final String CREATABLE  = 'creatable';
-    public static final String DELETABLE  = 'deletable';
-    public static final String MERGEABLE  = 'mergeable';
-    public static final String QUERYABLE = 'queryable';
-    public static final String SEARCHABLE = 'searchable';
-    public static final String UNDELETABLE = 'undeletable';
-    public static final String UPDATEABLE = 'updateable';
 
 	/*
 	 * Method to return a describe result for a given object and field.
@@ -147,64 +138,7 @@ public with sharing class HelperSchema {
 		return objectDescribeFieldsByObjectNameAndKey.get(obj + ':' + keyType);
 
     }
-        
-    public static void checkObjectPermissions(String objAPIName, String action)
-    {
-        if (objAPIName == 'simpli_fhist__Field_History__c')
-        { 
-            if (action == CREATABLE) checkFileUploadConfigCreatable();
-            else if (action == UPDATEABLE) checkFileUploadConfigUpdateable();
-            else throw new FieldHistoryException('No permission check for simpli_fhist__Field_History__c with action - ' + action);
 
-        } else {
-            if (action == CREATABLE) checkObjectCreatable(objAPIName);
-            else if (action == UPDATEABLE) checkObjectUpdateable(objAPIName);
-            else throw new FieldHistoryException('No permission check for ' + objAPIName + ' with action - ' + action);
-            
-        }
-    }
-
-	private static void checkFileUploadConfigCreatable()
-    {
-        HelperSchema.checkObjectCreatable('simpli_fhist__Field_History__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Account__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Contact__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Event__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__User__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__CampaignMember__c');
-
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Change_Index__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__End_Date__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Event__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Field_API_Name__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Field_Name__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__From_Value__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Previous_Cumulative_Duration__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Running_User__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__Start_Date__c');
-        HelperSchema.checkObjectFieldCreateable('simpli_fhist__Field_History__c', 'simpli_fhist__To_Value__c');
-    }
-
-	private static void checkFileUploadConfigUpdateable()
-    {
-        HelperSchema.checkObjectUpdateable('simpli_fhist__Field_History__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Account__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Contact__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Event__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__User__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__CampaignMember__c');
-
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Change_Index__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__End_Date__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Event__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Field_API_Name__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Field_Name__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__From_Value__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Previous_Cumulative_Duration__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Running_User__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__Start_Date__c');
-        HelperSchema.checkObjectFieldUpdateable('simpli_fhist__Field_History__c', 'simpli_fhist__To_Value__c');
-    }
 	
 	//------------------------------------------------
 	// PRIVATE METHODS BELOW
@@ -275,194 +209,5 @@ public with sharing class HelperSchema {
         
         return fieldName;
     }
-
-
-    //---------------------------------------------------------------------------------
-    // ACCESSIBILITY METHODS
-    //---------------------------------------------------------------------------------
-    public static void checkSelectAccessible(String selectStr) 
-    {
-
-        List<String> fields = selectStr.substringBetween('SELECT', 'FROM').split(',');
-        
-        String objAPIName = null;
-        if (!selectStr.containsIgnoreCase('WHERE'))
-            objAPIName = selectStr.substringAfter('FROM ');
-        else
-            objAPIName = selectStr.substringBetween('FROM ', ' WHERE');
-        
-        HelperSchema.checkObjectAccessible(objAPIName);
-
-        for (String field: fields)
-        {
-            //do security validation on additional fields. If the field is a lookup the security is performed later
-            if (!field.contains('.'))
-                HelperSchema.checkObjectFieldAccessible(objAPIName, field);
-        }
- 
-    }
-    
-    /*
-	 * Method to determine if an SObject field is accessible. This is used
-	 * for security to ensure user is allowed to see a field for the given object.
-	 */
-	public static Boolean checkObjectFieldAccessible(String objName, String fieldName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectFieldAccessible called with objName - ' + objName + '.' + fieldName.deleteWhitespace());
-
-        fieldName = scrubFieldName(fieldName);
-
-        Schema.DescribeFieldResult fieldDesc = getFieldDescribeResult(objName, fieldName);
-		if (fieldDesc != null && fieldDesc.isAccessible()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Field with name ' + objName + '.' + fieldName + ' is not accessible or does not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject field is accessible. This is used
-	 * for security to ensure user is allowed to see a field for the given object.
-	 */
-	public static void checkObjectFieldAccessible(String objName, String fieldName)
-	{
-		checkObjectFieldAccessible(objName, fieldName, true);
-	}
-
-    /*
-	 * Method to determine if an SObject field is createable. This is used
-	 * for security to ensure user is allowed to set a field for the given object.
-	 */
-	public static Boolean checkObjectFieldCreateable(String objName, String fieldName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectFieldCreateable called with objName - ' + objName + '.' + fieldName.deleteWhitespace());
-
-        fieldName = scrubFieldName(fieldName);
-
-		if (getFieldDescribeResult(objName, fieldName).isCreateable()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Field with name ' + objName + '.' + fieldName.deleteWhitespace() + ' is not creatable or does not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject field is createable. This is used
-	 * for security to ensure user is allowed to set a field for the given object.
-	 */
-	public static void checkObjectFieldCreateable(String objName, String fieldName)
-	{
-		checkObjectFieldCreateable(objName, fieldName, true);
-	}
-
-	/*
-	 * Method to determine if an SObject field is createable. This is used
-	 * for security to ensure user is allowed to set a field for the given object.
-	 */
-	public static Boolean checkObjectFieldUpdateable(String objName, String fieldName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectFieldUpdateable called with objName - ' + objName + '.' + fieldName.deleteWhitespace());
-
-        fieldName = scrubFieldName(fieldName);
-
-		if (getFieldDescribeResult(objName, fieldName).isUpdateable()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Field with name ' + objName + '.' + fieldName + ' is not updateable or does not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject field is createable. This is used
-	 * for security to ensure user is allowed to set a field for the given object.
-	 */
-	public static void checkObjectFieldUpdateable(String objName, String fieldName)
-	{
-		checkObjectFieldUpdateable(objName, fieldName, true);
-	}
-
-	/*
-	 * Method to determine if an SObject is createable. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static Boolean checkObjectCreateable(String objName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectCreateable called with objName - ' + objName);
-
-		if (getObjectSchema(objName).isCreateable()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Records of type ' + objName + ' are not creatable or do not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject is createable. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static void checkObjectCreatable(String objName)
-	{
-		checkObjectCreateable(objName, true);
-	}
-
-	/*
-	 * Method to determine if an SObject is accessible. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static Boolean checkObjectAccessible(String objName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectAccessible called with objName - ' + objName);
-
-		if (getObjectSchema(objName).isAccessible()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Records of type ' + objName + ' are not accessible or do not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject is accessible. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static void checkObjectAccessible(String objName)
-	{
-		checkObjectAccessible(objName, true);
-	}
-
-    /*
-	 * Method to determine if an SObject is createable. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static Boolean checkObjectUpdateable(String objName, Boolean throwExc)
-	{
-		System.debug(LoggingLevel.DEBUG, 'checkObjectUpdateable called with objName - ' + objName);
-
-		if (getObjectSchema(objName).isUpdateable()) {
-			return true;
-		} else {
-			if (throwExc)
-				throw new FieldHistoryException('Records of type ' + objName + ' are not updateable or do not exist. Please check user permissions');
-			return false;
-		}
-	}
-
-	/*
-	 * Method to determine if an SObject is createable. This is used
-	 * for security to ensure user is allowed to create records for the given object.
-	 */
-	public static void checkObjectUpdateable(String objName)
-	{
-		checkObjectUpdateable(objName, true);
-	}
 
 }
