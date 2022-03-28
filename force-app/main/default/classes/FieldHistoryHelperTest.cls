@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 01-14-2021
- * @last modified by  : tom.h.ansley@medtronic.com
+ * @last modified on  : 02-09-2022
+ * @last modified by  : tom@ansleyllc.com
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-13-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -14,74 +14,99 @@ public with sharing class FieldHistoryHelperTest
     static testMethod void testBasicAccountInsert() 
     {
         Test.startTest();
-            Account acct = HelperTest.insertAccount('Basic Account Insert Test');
+            Id acctId = HelperTest.insertAccount('Basic Account Insert Test');
         Test.stopTest();
-        
+
         Set<String> objIds = new Set<String>();
-        objIds.add(acct.Id);
+        objIds.add(acctId);
         List<Field_History__c> acctHist = FieldHistoryHelper.getFieldHistory('Account', objIds);
-        System.assert(acctHist.size() == 1);
+        System.assertEquals(2, acctHist.size());
 
         Field_History__c hist = acctHist[0];
 
-        System.assert(hist.Change_Index__c   == 1);
-        System.assert(hist.Field_API_Name__c == 'Name');
-        System.assert(hist.Field_Name__c     == 'Account Name');
-        System.assert(hist.Start_Date__c     == System.today());
-        System.assert(hist.End_Date__c       == null);
-        System.assert(hist.RecordType.Name   == 'Account');
-        System.assert(hist.To_Value__c       == 'Basic Account Insert Test');
-        System.assert(hist.From_Value__c     == null);
+        System.assertEquals(1, hist.Change_Index__c);
+        System.assertEquals('Name', hist.Field_API_Name__c);
+        System.assertEquals('Account Name', hist.Field_Name__c);
+        System.assertEquals(System.today(), hist.Start_Date__c);
+        System.assertEquals(null, hist.End_Date__c);
+        System.assertEquals('Account', hist.RecordType.Name);
+        System.assertEquals('Basic Account Insert Test', hist.To_Value__c);
+        System.assertEquals(null, hist.From_Value__c);
+
+        hist = acctHist[1];
+
+        System.assertEquals(1, hist.Change_Index__c);
+        System.assertEquals('AnnualRevenue', hist.Field_API_Name__c);
+        System.assertEquals('Annual Revenue', hist.Field_Name__c);
+        System.assertEquals(System.today(), hist.Start_Date__c);
+        System.assertEquals(null, hist.End_Date__c);
+        System.assertEquals('Account', hist.RecordType.Name);
+        System.assertEquals('125000', hist.To_Value__c);
+        System.assertEquals(null, hist.From_Value__c);
+
+
     }
 
     static testMethod void testBasicAccountUpdate() 
     {
         Test.startTest();
-            Account acct = HelperTest.insertAccount('Basic Account Update Test');
+            Id acctId = HelperTest.insertAccount('Basic Account Update Test');
 
+            Account acct = [SELECT Id FROM Account WHERE Id = :acctId];
             acct.Name = 'Basic Account Update Test 2';
 
             update acct;
         Test.stopTest();
         
         Set<String> objIds = new Set<String>();
-        objIds.add(acct.Id);
+        objIds.add(acctId);
         List<Field_History__c> acctHist = FieldHistoryHelper.getFieldHistory('Account', objIds);
-        System.assert(acctHist.size() == 2);
+        System.assertEquals(3, acctHist.size());
 
         Field_History__c hist = acctHist[0];
 
-        System.assert(hist.Change_Index__c   == 1);
-        System.assert(hist.Field_API_Name__c == 'Name');
-        System.assert(hist.Field_Name__c     == 'Account Name');
-        System.assert(hist.Start_Date__c     == System.today());
-        System.assert(hist.End_Date__c       == System.today());
-        System.assert(hist.RecordType.Name   == 'Account');
-        System.assert(hist.To_Value__c       == 'Basic Account Update Test');
-        System.assert(hist.From_Value__c     == null);
+        System.assertEquals(1, hist.Change_Index__c);
+        System.assertEquals('Name', hist.Field_API_Name__c);
+        System.assertEquals('Account Name', hist.Field_Name__c);
+        System.assertEquals(System.today(), hist.Start_Date__c);
+        System.assertEquals(System.today(), hist.End_Date__c);
+        System.assertEquals('Account', hist.RecordType.Name);
+        System.assertEquals('Basic Account Update Test', hist.To_Value__c);
+        System.assertEquals(null, hist.From_Value__c);
 
         hist = acctHist[1];
 
-        System.assert(hist.Change_Index__c   == 2);
-        System.assert(hist.Field_API_Name__c == 'Name');
-        System.assert(hist.Field_Name__c     == 'Account Name');
-        System.assert(hist.Start_Date__c     == System.today());
-        System.assert(hist.End_Date__c       == null);
-        System.assert(hist.RecordType.Name   == 'Account');
-        System.assert(hist.To_Value__c       == 'Basic Account Update Test 2');
-        System.assert(hist.From_Value__c     == 'Basic Account Update Test');
+        System.assertEquals(1, hist.Change_Index__c);
+        System.assertEquals('AnnualRevenue', hist.Field_API_Name__c);
+        System.assertEquals('Annual Revenue', hist.Field_Name__c);
+        System.assertEquals(System.today(), hist.Start_Date__c);
+        System.assertEquals(null, hist.End_Date__c);
+        System.assertEquals('Account', hist.RecordType.Name);
+        System.assertEquals('125000', hist.To_Value__c);
+        System.assertEquals(null, hist.From_Value__c);
+
+        hist = acctHist[2];
+
+        System.assertEquals(2, hist.Change_Index__c);
+        System.assertEquals('Name', hist.Field_API_Name__c);
+        System.assertEquals('Account Name', hist.Field_Name__c);
+        System.assertEquals(System.today(), hist.Start_Date__c);
+        System.assertEquals(null, hist.End_Date__c);
+        System.assertEquals('Account', hist.RecordType.Name);
+        System.assertEquals('Basic Account Update Test 2', hist.To_Value__c);
+        System.assertEquals('Basic Account Update Test', hist.From_Value__c);
 
     }
 
     static testMethod void testBasicContactInsert() 
     {
         Test.startTest();
-            Account acct = HelperTest.insertAccount('Basic Account Insert Test');
-            Contact cont = HelperTest.insertContact('Testy', 'Testerson', acct);
+            Id acctId = HelperTest.insertAccount('Basic Account Insert Test');
+            Id contId = HelperTest.insertContact('Testy', 'Testerson', acctId);
         Test.stopTest();
         
         Set<String> objIds = new Set<String>();
-        objIds.add(cont.Id);
+        objIds.add(contId);
         List<Field_History__c> contHist = FieldHistoryHelper.getFieldHistory('Contact', objIds);
         System.assert(contHist.size() == 1);
 
@@ -124,13 +149,13 @@ public with sharing class FieldHistoryHelperTest
     static testMethod void testBasicEventInsert() 
     {
         Test.startTest();
-            Account acct = HelperTest.insertAccount('Basic Account Insert Test');
-            Contact cont = HelperTest.insertContact('Testy', 'Testerson', acct);
-            Event evt = HelperTest.insertEvent(acct, cont);
+            Id acctId = HelperTest.insertAccount('Basic Account Insert Test');
+            Id contId = HelperTest.insertContact('Testy', 'Testerson', acctId);
+            Id evtId = HelperTest.insertEvent(acctId, contId);
         Test.stopTest();
         
         Set<String> objIds = new Set<String>();
-        objIds.add(evt.Id);
+        objIds.add(evtId);
         List<Field_History__c> evtHist = FieldHistoryHelper.getFieldHistory('Event', objIds);
         System.assert(evtHist.size() == 1);
 
@@ -150,14 +175,14 @@ public with sharing class FieldHistoryHelperTest
     static testMethod void testBasicCampaignMemberInsert() 
     {
         Test.startTest();
-            Account acct = HelperTest.insertAccount('Basic Account Insert Test');
-            Contact cont = HelperTest.insertContact('Testy', 'Testerson', acct);
-            Campaign camp = HelperTest.insertCampaign('Test Campaign');
-            CampaignMember member = HelperTest.insertCampaignMember(camp, cont);
+            Id acctId = HelperTest.insertAccount('Basic Account Insert Test');
+            Id contId = HelperTest.insertContact('Testy', 'Testerson', acctId);
+            Id campId = HelperTest.insertCampaign('Test Campaign');
+            Id campMemId = HelperTest.insertCampaignMember(campId, contId);
         Test.stopTest();
         
         Set<String> objIds = new Set<String>();
-        objIds.add(member.Id);
+        objIds.add(campMemId);
         List<Field_History__c> memberHist = FieldHistoryHelper.getFieldHistory('CampaignMember', objIds);
         System.assert(memberHist.size() == 1);
 

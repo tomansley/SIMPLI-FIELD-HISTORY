@@ -1,7 +1,7 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 02-01-2021
+ * @last modified on  : 03-17-2022
  * @last modified by  : tom.h.ansley@medtronic.com
  * Modifications Log 
  * Ver   Date         Author                       Modification
@@ -104,8 +104,9 @@ public without sharing class FieldHistoryQ implements Queueable {
 		
 		System.debug(LoggingLevel.DEBUG, 'SOQL - ' + soql);
 		
-        HelperSchema.checkSelectAccessible(soql);
-		List<Field_History__c> allObjFieldHistoriesList = Database.query(soql);
+        SObjectAccessDecision dec = Security.stripInaccessible(AccessType.READABLE, Database.query(soql));
+
+		List<Field_History__c> allObjFieldHistoriesList = (List<Field_History__c>) dec.getRecords();
 
 
 
@@ -153,7 +154,7 @@ public without sharing class FieldHistoryQ implements Queueable {
 		//   a) Update end date of prior field history record (if it exists)
 		//   b) Create new field history record.
 		//--------------------------------------------------------------------------------------------
-		List<Field_History__c> allObjFieldHistoriesUpserted = new List<Field_History__c>();
+		Map<String, Field_History__c> allObjFieldHistoriesUpserted = new Map<String, Field_History__c>();
 
 		for (SObject newRecord: newRecords)
 		{
@@ -173,6 +174,7 @@ public without sharing class FieldHistoryQ implements Queueable {
 			if (objChanges == null)
 				break;
 				
+            Integer index = 0;
 			for (String objChange: objChanges)
 			{
 
@@ -198,7 +200,7 @@ public without sharing class FieldHistoryQ implements Queueable {
 						
 						System.debug(LoggingLevel.DEBUG, 'Field history record updated - ' + lastFieldHistory);
 						
-						allObjFieldHistoriesUpserted.add(lastFieldHistory);
+						allObjFieldHistoriesUpserted.put(lastFieldHistory.Id, lastFieldHistory);
 						
 					}
 
@@ -257,13 +259,14 @@ public without sharing class FieldHistoryQ implements Queueable {
 				
 				System.debug(LoggingLevel.DEBUG, 'Field history record created - ' + newFieldHistory);
 
-				allObjFieldHistoriesUpserted.add(newFieldHistory);
+				allObjFieldHistoriesUpserted.put(String.valueOf(index), newFieldHistory);
 				
+                index++;
 			}
 			
 		}
 		
-		HelperDatabase.upsertRecords(allObjFieldHistoriesUpserted, 'simpli_fhist__Field_History__c');
+		HelperDatabase.upsertRecords(allObjFieldHistoriesUpserted.values(), 'simpli_fhist__Field_History__c');
 		
 	}
 
@@ -296,8 +299,13 @@ public without sharing class FieldHistoryQ implements Queueable {
 				String soql = 'SELECT Id, Name FROM ' + fieldConfig.Field_Lookup_Object__c + ' WHERE Id IN :fieldIds';
 				System.debug(LoggingLevel.DEBUG, 'SOQL - ' + soql);
 
-                HelperSchema.checkSelectAccessible(soql);
-				vLookupsByFieldName.put(fieldConfig.Field_API_Name__c, new Map<Id, SObject>(Database.query(soql)));
+                List<SObject> vlookups = Database.query(soql);
+
+                SObjectAccessDecision dec = Security.stripInaccessible(AccessType.READABLE, vlookups);
+
+                List<SObject> objs = (List<SObject>) dec.getRecords();
+        
+				vLookupsByFieldName.put(fieldConfig.Field_API_Name__c, new Map<Id, SObject>(objs));
 
 			}
 		}
