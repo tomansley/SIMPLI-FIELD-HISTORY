@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 03-17-2022
- * @last modified by  : tom.h.ansley@medtronic.com
+ * @last modified on  : 08-08-2023
+ * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-13-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -57,7 +57,8 @@ public without sharing class FieldHistoryQ implements Queueable {
 		debug += '-----------------------------------------\n';
 		System.debug(LoggingLevel.DEBUG, debug);
 		
-		RecordType rt = HelperRecordType.getRecordType('simpli_fhist__Field_History__c', objType);
+        String rtType = objType.removeEnd('__c'); //if the obj type is XXX__c then the supplied record type MUST BE XXX as we cannot add an __c to a record type name or API name
+		RecordType rt = HelperRecordType.getRecordType('simpli_fhist__Field_History__c', rtType);
 		
 		if (rt == null) throw new FieldHistoryException('The provided object does not have an associated record type (' + objLabel + '). Please check the  Field History object to resolve');
 		
