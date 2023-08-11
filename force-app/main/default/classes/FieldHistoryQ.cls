@@ -1,7 +1,7 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 08-08-2023
+ * @last modified on  : 08-10-2023
  * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
@@ -157,6 +157,7 @@ public without sharing class FieldHistoryQ implements Queueable {
 		//--------------------------------------------------------------------------------------------
 		Map<String, Field_History__c> allObjFieldHistoriesUpserted = new Map<String, Field_History__c>();
 
+        Integer index = 0;
 		for (SObject newRecord: newRecords)
 		{
 
@@ -175,7 +176,6 @@ public without sharing class FieldHistoryQ implements Queueable {
 			if (objChanges == null)
 				break;
 				
-            Integer index = 0;
 			for (String objChange: objChanges)
 			{
 
@@ -261,7 +261,7 @@ public without sharing class FieldHistoryQ implements Queueable {
 				System.debug(LoggingLevel.DEBUG, 'Field history record created - ' + newFieldHistory);
 
 				allObjFieldHistoriesUpserted.put(String.valueOf(index), newFieldHistory);
-				
+
                 index++;
 			}
 			
