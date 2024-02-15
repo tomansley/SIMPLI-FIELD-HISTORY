@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 01-20-2021
- * @last modified by  : tom.h.ansley@medtronic.com
+ * @last modified on  : 02-14-2024
+ * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-20-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -50,6 +50,10 @@ public with sharing class HelperInstall {
         htmlBody += '<br/></br>' + org.Name + '/' + org.OrganizationType + '/' + org.Country + '/' + org.PrimaryContact;
 
 		mail.setHtmlBody(htmlBody);
-		Messaging.sendEmail(new Messaging.Email[] { mail });
+        try {
+    		Messaging.sendEmail(new Messaging.Email[] { mail });
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Email could not be sent');
+        }
 	}
 }
