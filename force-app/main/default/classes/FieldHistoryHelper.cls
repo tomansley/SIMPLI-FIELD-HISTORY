@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 02-09-2022
- * @last modified by  : tom@ansleyllc.com
+ * @last modified on  : 02-14-2024
+ * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-13-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -25,14 +25,17 @@ global with sharing class FieldHistoryHelper {
             if (Trigger.isInsert)
             {
                 handleFieldHistoryTracking(newRecords, null);
+                System.debug(LoggingLevel.DEBUG, 'Inserting records!');
     
             } else if (Trigger.isUpdate)
             {
                 handleFieldHistoryTracking(newRecords, oldRecords);
+                System.debug(LoggingLevel.DEBUG, 'Updating records!');
             
             } else if (Trigger.isDelete)
             {
                 handleFieldHistoryTracking(null, oldRecords);
+                System.debug(LoggingLevel.DEBUG, 'Deleting records!');
             }
         
         }
@@ -48,6 +51,8 @@ global with sharing class FieldHistoryHelper {
 		Map<Id, SObject> changedRecords = new Map<Id, SObject>();
 		
 		System.debug(LoggingLevel.DEBUG, 'Starting handleFieldHistoryTracking');
+		System.debug(LoggingLevel.DEBUG, 'New Records - ' + newRecords);
+		System.debug(LoggingLevel.DEBUG, 'Old Records - ' + oldRecords);
 		
 		try {
 			if (newRecords == null) return null;

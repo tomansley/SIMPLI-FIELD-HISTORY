@@ -1,7 +1,7 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 08-10-2023
+ * @last modified on  : 02-14-2024
  * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
@@ -266,8 +266,11 @@ public without sharing class FieldHistoryQ implements Queueable {
 			}
 			
 		}
-		
-		HelperDatabase.upsertRecords(allObjFieldHistoriesUpserted.values(), 'simpli_fhist__Field_History__c');
+		try {
+    		HelperDatabase.upsertRecords(allObjFieldHistoriesUpserted.values(), 'simpli_fhist__Field_History__c');
+        } catch (Exception e) {
+            System.debug(LoggingLevel.DEBUG, 'Error upsertingRecords - ' + e.getMessage() + ' - ' + e.getStackTraceString());
+        }
 		
 	}
 

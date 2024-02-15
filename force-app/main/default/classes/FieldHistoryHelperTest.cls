@@ -1,8 +1,8 @@
 /**
  * @description       : 
  * @author            : tom.h.ansley@medtronic.com
- * @last modified on  : 02-09-2022
- * @last modified by  : tom@ansleyllc.com
+ * @last modified on  : 02-14-2024
+ * @last modified by  : 
  * Modifications Log 
  * Ver   Date         Author                       Modification
  * 1.0   01-13-2021   tom.h.ansley@medtronic.com   Initial Version
@@ -96,6 +96,20 @@ public with sharing class FieldHistoryHelperTest
         System.assertEquals('Basic Account Update Test 2', hist.To_Value__c);
         System.assertEquals('Basic Account Update Test', hist.From_Value__c);
 
+    }
+
+    static testMethod void testBasicAccountDelete() 
+    {
+        Id acctId = HelperTest.insertAccount('Basic Account Delete Test');
+        Test.startTest();
+            Account acct = new Account(Id = acctId);
+            delete acct;
+        Test.stopTest();
+
+        Set<String> objIds = new Set<String>();
+        objIds.add(acctId);
+        List<Field_History__c> acctHist = FieldHistoryHelper.getFieldHistory('Account', objIds);
+        System.assertEquals(0, acctHist.size());
     }
 
     static testMethod void testBasicContactInsert() 
